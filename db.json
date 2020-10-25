@@ -1,0 +1,46 @@
+{
+  "auth": {
+    "uid": "user123123"
+  },
+  "data": [
+    {
+      "id": "user123123",
+      "contacts": [
+        {
+          "id": "contacts23424",
+          "name": "Shamil",
+          "phone": "+79127986556",
+          "email": "schamil.minibaev@gmail.com"
+        },
+        {
+          "id": "contacts5426",
+          "name": "Masha",
+          "phone": "+79617976088",
+          "email": "masha@masha@gmail.com"
+        },
+        {
+          "id": "contacts5428",
+          "name": "Anna",
+          "phone": "+79624476088",
+          "email": "anna@gmail.com"
+        }
+      ]
+    },
+    {
+      "id": "ascacaa1603623213487",
+      "contacts": []
+    },
+    {
+      "id": "ss23551603623575404",
+      "contacts": []
+    },
+    {
+      "id": "asd214g1603623813549",
+      "contacts": []
+    },
+    {
+      "id": "dsbdfbb1603629415545",
+      "contacts": []
+    }
+  ]
+}
