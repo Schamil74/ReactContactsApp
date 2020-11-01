@@ -9,8 +9,8 @@ import {
 } from '@/store/types/fetchErrorTypes'
 
 const initialState: IFetchErrorType = {
-    isFetchingAuth: false,
-    isFetchingData: false,
+    isFetchingAuth: true,
+    isFetchingData: true,
     isErrorAuth: {
         error: false,
         msg: '',

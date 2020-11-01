@@ -2,37 +2,46 @@ import React, { FC, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import Loader from './components/loader/loader'
-import Edit from './pages/edit'
+import Edit from './pages/edit/edit'
 import Login from './pages/login'
 import Main from './pages/main'
 import Register from './pages/register'
 import { thunkIsAuth, thunkLogOut } from './store/actions/authActions'
-import { thunkGetData } from './store/actions/contactsActions'
 import { AppThunkDispatch, RootState } from './store/types'
 
 const App: FC = () => {
     const authReducer = (state: RootState) => state.authReducer
     const fetchErrorReducer = (state: RootState) => state.fetchErrorReducer
-    const contactsReducer = (state: RootState) => state.contactsReducer
-
     const thunkDispatch: AppThunkDispatch = useDispatch()
     const { isFetchingAuth } = useSelector(fetchErrorReducer)
-    const { contacts } = useSelector(contactsReducer)
+
     const { uid } = useSelector(authReducer)
 
     useEffect(() => {
-        thunkDispatch(thunkIsAuth())
-    }, [])
-
-    useEffect(() => {
-        if (uid) {
-            thunkDispatch(thunkGetData(uid))
+        if (!uid) {
+            thunkDispatch(thunkIsAuth())
         }
-    }, [uid])
+    }, [])
 
     const handleLogOut = () => {
         thunkDispatch(thunkLogOut())
     }
+
+    const logged = (
+        <Switch>
+            <Route exact path="/" component={Main}></Route>
+            <Route path="/record/:id/" component={Edit}></Route>
+            <Redirect to="/" />
+        </Switch>
+    )
+
+    const unlogged = (
+        <Switch>
+            <Route exact path="/register" component={Register}></Route>
+            <Route exact path="/login" component={Login}></Route>
+            <Redirect to="/login" />
+        </Switch>
+    )
 
     return (
         <>
@@ -49,37 +58,11 @@ const App: FC = () => {
             <div className="app__main app-main">
                 <div className="app__container container">
                     {isFetchingAuth ? (
-                        <Loader />
+                        <Loader modificator="fixed" />
+                    ) : uid ? (
+                        logged
                     ) : (
-                        <>
-                            <Switch>
-                                {uid ? (
-                                    <>
-                                        <Route
-                                            path={'/:id'}
-                                            component={Edit}
-                                        ></Route>
-                                        <Route exact={true} path={'/'}>
-                                            <Main contacts={contacts}></Main>
-                                        </Route>
-                                        <Redirect to={'/'} />
-                                    </>
-                                ) : (
-                                    <>
-                                        <Route
-                                            path={'/register'}
-                                            component={Register}
-                                        ></Route>
-                                        <Route
-                                            exact={true}
-                                            path={'/login'}
-                                            component={Login}
-                                        ></Route>
-                                        <Redirect to={'/login'} />
-                                    </>
-                                )}
-                            </Switch>
-                        </>
+                        unlogged
                     )}
                 </div>
             </div>

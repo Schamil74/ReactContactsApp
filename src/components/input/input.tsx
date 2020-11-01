@@ -1,6 +1,6 @@
 import { Ifield } from '@/utils'
 import withModificator from '@/withClass'
-import React from 'react'
+import React, { FC } from 'react'
 
 const blockClassName = 'input'
 
@@ -15,7 +15,7 @@ function isInvalid(props: IPropsField): boolean {
     return !valid && shouldValidate && touched
 }
 
-const Input: React.FC<IPropsField> = props => {
+const Input: FC<IPropsField> = props => {
     const {
         name,
         placeholder,

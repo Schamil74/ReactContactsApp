@@ -1,0 +1,12 @@
+.search {
+    &_contacts {
+        max-width: 50%;
+        margin-right: auto;
+        margin-bottom: 20px;
+        margin-left: auto;
+
+        @include below(map-get($breaks, mobile)) {
+            max-width: 100%;
+        }
+    }
+}

@@ -9,12 +9,11 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const StylelintPlugin = require('stylelint-webpack-plugin')
-const globImporter = require('node-sass-glob-importer')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const IconfontPlugin = require('iconfont-plugin-webpack')
 const dotenv = require('dotenv').config()
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
-// const PrettierPlugin = require('prettier-webpack-plugin')
+const PrettierPlugin = require('prettier-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = !isDev
@@ -83,13 +82,16 @@ const filename = ext => (isDev ? `[name].${ext}` : `[name].[hash].${ext}`)
 
 const cssLoaders = extra => {
     const loaders = [
-        {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-                hmr: isDev,
-                reloadAll: true,
-            },
-        },
+        isDev
+            ? 'style-loader'
+            : {
+                  loader: MiniCssExtractPlugin.loader,
+                  options: {
+                      hmr: isDev,
+                      reloadAll: true,
+                  },
+              },
+        { loader: 'css-modules-typescript-loader' },
         {
             loader: 'css-loader',
             options: {
@@ -146,6 +148,8 @@ const plugins = () => {
             template: paths.src + '/index.html',
         }),
 
+        new PrettierPlugin(),
+
         new IconfontPlugin({
             src: paths.src + '/svg',
             family: 'iconfont',
@@ -197,8 +201,6 @@ const plugins = () => {
         new webpack.DefinePlugin({
             'process.env': JSON.stringify(dotenv.parsed),
         }),
-
-        // new PrettierPlugin(),
 
         new CleanWebpackPlugin(),
     ]
@@ -262,7 +264,6 @@ module.exports = {
         modules: ['node_modules', path.resolve(__dirname, 'custom-loaders')],
     },
     module: {
-        // preLoaders: [],
         rules: [
             {
                 test: /\.(js|jsx)$/,
@@ -285,6 +286,7 @@ module.exports = {
             },
             {
                 test: /\.s[ac]ss$/,
+                exclude: /\.module.(s[ac]ss)$/,
                 use: cssLoaders({
                     loader: 'sass-loader',
                     options: {
@@ -293,14 +295,29 @@ module.exports = {
                             includePaths: [
                                 path.resolve(__dirname, 'node_modules'),
                             ],
-                            // importer: globImporter(),
                         },
                     },
                 }),
             },
             {
-                test: /\.scss/,
+                test: /\.s[ac]ss$/,
+                exclude: /\.module\.s[ac]ss$/,
                 loader: 'import-glob-loader',
+            },
+            {
+                test: /\.s[ac]ss$/,
+                include: /\.module\.s[ac]ss$/,
+                use: cssLoaders({
+                    loader: 'sass-loader',
+                    options: {
+                        sourceMap: isDev,
+                        sassOptions: {
+                            includePaths: [
+                                path.resolve(__dirname, 'node_modules'),
+                            ],
+                        },
+                    },
+                }),
             },
             {
                 test: /\.(ttf|woff|woff2|eot|svg)$/,

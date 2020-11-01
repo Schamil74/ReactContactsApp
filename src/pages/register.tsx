@@ -1,9 +1,9 @@
 import Auth from '@/components/auth/auth'
 import { thunkRegister } from '@/store/actions/authActions'
 import { createControl } from '@/utils'
-import React from 'react'
+import React, { FC } from 'react'
 
-const Register: React.FC = () => {
+const Register: FC = () => {
     return (
         <Auth
             thunkMethod={thunkRegister}

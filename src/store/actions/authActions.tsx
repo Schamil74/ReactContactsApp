@@ -13,7 +13,7 @@ export const thunkLogin = (uid: TUidType): AppThunkAction => async dispatch => {
     try {
         dispatch(setIsFetchingAuth(true))
 
-        const responseAuth = await axios.get(`/data/${uid}`)
+        const responseAuth = await axios.get(`/users/${uid}`)
 
         if (responseAuth.data.id === uid) {
             await axios.put(`/auth/`, {
@@ -41,7 +41,9 @@ export const thunkRegister = (
 
         const responseAuth = await axios.get(`/db`)
 
-        const user = responseAuth.data.data.find((user: any) => user.id === uid)
+        const user = responseAuth.data.users.find(
+            (user: any) => user.id === uid
+        )
 
         if (user) {
             throw new Error('Пользователь с таким ID уже зарегистрирован')
@@ -53,9 +55,8 @@ export const thunkRegister = (
             uid: id,
         })
 
-        await axios.post(`/data`, {
+        await axios.post(`/users`, {
             id: responseRegister.data.uid,
-            contacts: [],
         })
 
         dispatch(setUid(responseRegister.data.uid))
@@ -77,6 +78,7 @@ export const thunkIsAuth = (): AppThunkAction => async dispatch => {
         dispatch(setIsFetchingAuth(true))
 
         const response = await axios.get(`/auth/`)
+
         dispatch(setUid(response.data.uid))
         dispatch(setIsFetchingAuth(false))
     } catch (error) {

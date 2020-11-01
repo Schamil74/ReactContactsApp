@@ -1,7 +1,7 @@
 import { AuthType, SetUidActionType, SET_UID } from '../types/authTypes'
 
 const initialState: AuthType = {
-    uid: '',
+    uid: null,
 }
 
 export function authReducer(
